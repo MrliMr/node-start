@@ -5,3 +5,6 @@
 var EventEmitter = require('events').EventEmitter
 var ee = new EventEmitter();
 
+ee.on('some_events', function (foo, bar) {
+    console.log();
+})
