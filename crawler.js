@@ -2,7 +2,7 @@ var http = require('http')
 var fs = require('fs');
 
 var cheerio = require('cheerio');
-var url = 'http://www.imooc.com/learn/348'
+var url = 'http://www.imooc.com/learn/50'
 
 function filterChapters(html) {
     var $ = cheerio.load(html);
@@ -17,7 +17,7 @@ function filterChapters(html) {
     var courseData = [];
     chapters.each(function (item) {
         var chapter = $(this);
-        var chapterTitle = chapter.find('strong').text();
+        var chapterTitle = chapter.find('strong').text().trim();
         var videos = chapter.find('li a');
 
         var chapterData = {
@@ -26,7 +26,7 @@ function filterChapters(html) {
         }
         //
         videos.each(function () {
-            var videoTitle = $(this).text();
+            var videoTitle = $(this).text().trim();
             var id = $(this).attr('href').split('video/')[1];
 
             chapterData.videos.push({
@@ -59,7 +59,7 @@ http.get(url, function (res) {
     res.on('end', function () {
         var courseData = filterChapters(html);
 
-        fs.open('./fs.json', 'a', function (err, fd) {
+        fs.open('./fs.json', 'w', function (err, fd) {
             var writeBuffer = new Buffer(JSON.stringify(courseData)),
                 offset = 0,
                 len = writeBuffer.length,
