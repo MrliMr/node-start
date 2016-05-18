@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise animation</title>
+    <script src="../node_modules/bluebird/js/browser/bluebird.min.js"></script>
+    <style>
+        .ball {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+        }
+
+        .ball1 {
+            background: red;
+        }
+
+        .ball2 {
+            background: yellow;
+        }
+
+        .ball3 {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+<div class="ball ball1" style="margin-left: 0"></div>
+<div class="ball ball2" style="margin-left: 0"></div>
+<div class="ball ball3" style="margin-left: 0"></div>
+<script>
+    var ball1 = document.querySelector('.ball1');
+    var ball2 = document.querySelector('.ball2');
+    var ball3 = document.querySelector('.ball3');
+    //    function animation(dom, move, cb) {
+    //
+    //        setTimeout(function () {
+    //            var ml = parseInt(dom.style.marginLeft, 10);
+    //            if (ml === move) {
+    //                cb && cb()
+    //            }
+    //            else {
+    //                if (ml < move) {
+    //                    ml++;
+    //                } else {
+    //                    ml--;
+    //                }
+    //                dom.style.marginLeft = ml + 'px';
+    //                animation(dom, move, cb)
+    //            }
+    //        }, 13)
+    //    }
+    //    animation(ball1, 200, function () {
+    //        animation(ball2, 250, function () {
+    //            animation(ball3, 100, function () {
+    //                animation(ball1, 0, function () {
+    //                    animation(ball2, 0, function () {
+    //                        animation(ball3, 0)
+    //                    })
+    //                })
+    //            })
+    //        })
+    //    })
+    var Promise = window.Promise;
+    function promiseAnimate(dom, move) {
+        return new Promise(function (resolve, reject) {
+            console.log(reject);
+            function _animation() {
+
+                setTimeout(function () {
+                    var ml = parseInt(dom.style.marginLeft, 10);
+                    if (ml === move) {
+                        resolve()
+                    }
+                    else {
+                        if (ml < move) {
+                            ml++;
+                        } else {
+                            ml--;
+                        }
+                        dom.style.marginLeft = ml + 'px';
+                        _animation()
+                    }
+                }, 13)
+            }
+
+            _animation();
+        })
+    }
+    promiseAnimate(ball1, 100)
+            .then(function () {
+                return promiseAnimate(ball2, 200)
+            })
+            .then(function () {
+                return promiseAnimate(ball3, 300)
+            })
+            .then(function () {
+                return promiseAnimate(ball3, 100)
+            })
+            .then(function () {
+                return promiseAnimate(ball2, 100)
+            })
+            .then(function () {
+                return promiseAnimate(ball1, 100)
+            })
+</script>
+</body>
+</html>
